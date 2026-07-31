@@ -1,5 +1,5 @@
 Name:           steamless
-Version:        {{{ git_version }}}
+Version:        {{{ git_version name=steamless }}}
 Release:        1%{?dist}
 Summary:        High-performance, zero-dependency SteamStub DRM unpacker engine
 
