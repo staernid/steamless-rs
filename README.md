@@ -105,6 +105,20 @@ void steamless_free_string(void* ptr);
 - **SteamStub Variant 3.0 & 3.0.1** (x86 & x64)
 - **SteamStub Variant 3.1 & 3.1.2** (x86 & x64)
 
+## 🚀 Releasing & Versioning
+
+To publish a new release and trigger automated cross-platform binary builds and COPR package deployment:
+
+```bash
+# 1. Update version in Cargo.toml to match new build number (e.g., 1.0.109)
+sed -i 's/^version = .*/version = "1.0.109"/' Cargo.toml
+
+# 2. Commit and push tag to trigger GitHub Release & COPR SRPM build
+git commit -am "release: b109"
+git tag b109
+git push origin master --tags
+```
+
 ---
 
 ## License & Disclaimers

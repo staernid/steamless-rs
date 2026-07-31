@@ -84,15 +84,16 @@ jobs:
         env:
           COPR_CONFIG: ${{ secrets.COPR_CONFIG }}
         run: |
-          TAG_NAME=${GITHUB_REF#refs/tags/}
+          RAW_TAG=${GITHUB_REF#refs/tags/}
+          VERSION=${RAW_TAG}
           if [ -n "$COPR_CONFIG" ]; then
             mkdir -p ~/.config
             echo "$COPR_CONFIG" > ~/.config/copr
-            sed -i "s/^Version:.*/Version:        ${TAG_NAME}/" steamless.spec
+            sed -i "s/^Version:.*/Version:        ${VERSION}/" steamless.spec
             mkdir -p ~/rpmbuild/SOURCES
-            curl -sL "https://github.com/staernid/steamless-rs/archive/refs/tags/${TAG_NAME}.tar.gz" -o ~/rpmbuild/SOURCES/steamless-${TAG_NAME}.tar.gz
+            curl -sL "https://github.com/staernid/steamless-rs/archive/refs/tags/${RAW_TAG}.tar.gz" -o ~/rpmbuild/SOURCES/steamless-rs-${VERSION}.tar.gz
             rpmbuild -bs steamless.spec
-            copr build steamless ~/rpmbuild/SRPMS/steamless-${TAG_NAME}-1*.src.rpm
+            copr build steamless ~/rpmbuild/SRPMS/steamless-${VERSION}-1*.src.rpm
           else
             echo "COPR_CONFIG secret not set in repository; skipping remote trigger."
           fi
