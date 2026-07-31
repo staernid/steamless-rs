@@ -9,6 +9,10 @@
 
 # Steamless Portable (Rust Engine)
 
+NOTE: **EXTREMELY**, though tastefully, vibe-coded and very briefly tested. It works, but expect trouble at every edge-case for now.
+
+---
+
 A high-performance, zero-dependency, ultra-portable rewrite of **Steamless** in Rust. 
 
 Steamless removes the SteamStub DRM protection layer applied to applications and games released on Steam via the Steamworks SDK.
