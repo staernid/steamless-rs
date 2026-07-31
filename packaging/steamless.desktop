@@ -1,0 +1,11 @@
+[Desktop Entry]
+Name=Steamless
+Comment=Remove SteamStub DRM protection from executables
+GenericName=DRM Unpacker
+Exec=steamless %f
+Icon=steamless
+Terminal=true
+Type=Application
+Categories=Utility;
+MimeType=application/x-dosexec;application/x-ms-dos-executable;
+Keywords=steam;drm;unpack;steamstub;
