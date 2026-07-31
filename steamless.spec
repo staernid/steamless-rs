@@ -1,11 +1,11 @@
 Name:           steamless
-Version:        105
+Version:        {{{ git_version }}}
 Release:        1%{?dist}
 Summary:        High-performance, zero-dependency SteamStub DRM unpacker engine
 
 License:        GPL-3.0-only
 URL:            https://github.com/staernid/steamless-rs
-Source0:        %{url}/archive/refs/tags/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
+Source0:        {{{ git_pack }}}
 
 BuildRequires:  cargo-rpm-macros >= 25
 BuildRequires:  gcc
@@ -15,7 +15,7 @@ Steamless is a DRM unpacker for SteamStub variants applied to executables releas
 This is the portable Rust engine supplying a fast CLI utility and C ABI shared library.
 
 %prep
-%autosetup -c
+{{{ git_setup_macro }}}
 
 %build
 cargo build --release --workspace
@@ -35,5 +35,4 @@ cargo test --workspace
 %{_libdir}/libsteamless_c.so
 
 %changelog
-* Fri Jul 31 2026 Staernid <vitezfh@gmail.com> - 105-1
-- Release v105 build
+{{{ git_changelog }}}
