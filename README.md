@@ -25,39 +25,43 @@ Steamless removes the SteamStub DRM protection layer applied to applications and
 
 ---
 
-## 🐧 Linux Installation Guide
+## 📦 Installation
 
-### Option 1: Fedora COPR (Fedora / RHEL / CentOS Stream)
+### With Cargo (Linux / macOS / Windows)
 
-Enable the COPR repository and install directly via `dnf`:
+Requires [Rust](https://rustup.rs) — compiles and installs the latest version directly from source:
 
 ```bash
-# Enable COPR repository
-sudo dnf copr enable staernid/steamless
-
-# Install CLI binary and shared library
-sudo dnf install steamless
+cargo install --git https://github.com/staernid/steamless-rs steamless-cli
 ```
 
-### Option 2: Install System-Wide via Cargo
+### Pre-built Binary (no Rust required)
 
+Download the latest release binary from [GitHub Releases](https://github.com/staernid/steamless-rs/releases/latest):
+
+**Linux (x64)**
 ```bash
-# Install CLI binary to ~/.cargo/bin/steamless
-cargo install --path crates/steamless-cli
+curl -fsSL https://github.com/staernid/steamless-rs/releases/latest/download/steamless-linux-x64.tar.gz | tar -xz -C ~/.local/bin steamless
 ```
 
-### Option 3: Manual Binary & Library Installation
-
+**macOS (Apple Silicon)**
 ```bash
-# Build release binaries
-cargo build --release
+curl -fsSL https://github.com/staernid/steamless-rs/releases/latest/download/steamless-macos-arm64.tar.gz | tar -xz -C ~/.local/bin steamless
+```
 
-# Install CLI binary to /usr/local/bin
-sudo cp target/release/steamless /usr/local/bin/
+**macOS (Intel)**
+```bash
+curl -fsSL https://github.com/staernid/steamless-rs/releases/latest/download/steamless-macos-x64.tar.gz | tar -xz -C ~/.local/bin steamless
+```
 
-# Install C shared library to /usr/local/lib
-sudo cp target/release/libsteamless.so /usr/local/lib/
-sudo ldconfig
+**Windows (x64)** — run in PowerShell:
+```powershell
+Invoke-WebRequest -Uri "https://github.com/staernid/steamless-rs/releases/latest/download/steamless-windows-x64.zip" -OutFile steamless.zip; Expand-Archive steamless.zip -DestinationPath "$env:LOCALAPPDATA\steamless"
+```
+
+**Windows (x86)** — run in PowerShell:
+```powershell
+Invoke-WebRequest -Uri "https://github.com/staernid/steamless-rs/releases/latest/download/steamless-windows-x86.zip" -OutFile steamless.zip; Expand-Archive steamless.zip -DestinationPath "$env:LOCALAPPDATA\steamless"
 ```
 
 ---
@@ -107,17 +111,18 @@ void steamless_free_string(void* ptr);
 
 ## 🚀 Releasing & Versioning
 
-To publish a new release and trigger automated cross-platform binary builds and COPR package deployment:
+To publish a new release and trigger automated cross-platform binary builds:
 
 ```bash
 # 1. Update version in Cargo.toml to match new build number (e.g., 1.0.109)
 sed -i 's/^version = .*/version = "1.0.109"/' Cargo.toml
 
-# 2. Commit and push tag to trigger GitHub Release & COPR SRPM build
+# 2. Commit and push tag to trigger GitHub Release & binary builds
 git commit -am "release: b109"
 git tag b109
 git push origin master --tags
 ```
+
 
 ---
 
