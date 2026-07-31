@@ -1,0 +1,7 @@
+[workspace]
+members = [
+    "crates/steamless-core",
+    "crates/steamless-c-abi",
+    "crates/steamless-cli"
+]
+resolver = "2"

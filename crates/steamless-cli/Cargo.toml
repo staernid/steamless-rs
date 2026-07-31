@@ -1,0 +1,13 @@
+[package]
+name = "steamless-cli"
+version = "1.0.0"
+edition = "2021"
+authors = ["Antigravity Engineering"]
+description = "Standalone command line executable for Steamless DRM unpacker"
+
+[[bin]]
+name = "steamless"
+path = "src/main.rs"
+
+[dependencies]
+steamless-core = { path = "../steamless-core" }

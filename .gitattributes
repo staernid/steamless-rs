@@ -1,0 +1,24 @@
+# Auto-detect text files and normalize to LF
+* text=auto
+
+# Source code
+*.rs text diff=rust
+*.py text
+*.toml text
+*.json text
+*.yml text
+*.yaml text
+*.md text
+*.sh text
+
+# Binary files
+*.exe binary
+*.dll binary
+*.so binary
+*.dylib binary
+*.png binary
+*.ico binary
+
+# Git
+.gitattributes text
+.gitignore text

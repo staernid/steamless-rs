@@ -1,0 +1,8 @@
+[package]
+name = "steamless-core"
+version = "1.0.0"
+edition = "2021"
+authors = ["Antigravity Engineering"]
+description = "High-performance, zero-dependency SteamStub DRM unpacker library"
+
+[dependencies]

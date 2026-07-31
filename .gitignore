@@ -1,0 +1,17 @@
+# Rust build artifacts
+/target/
+**/*.rs.bk
+
+# Binary executables and output files
+*.exe
+*.dll
+*.so
+*.dylib
+*.unpacked.exe
+
+# IDE & Editor settings
+.vs/
+.idea/
+*.swp
+*~
+.DS_Store
