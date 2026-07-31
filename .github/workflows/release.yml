@@ -88,7 +88,7 @@ jobs:
           if [ -n "$COPR_CONFIG" ]; then
             mkdir -p ~/.config
             echo "$COPR_CONFIG" > ~/.config/copr
-            copr buildscm --clone-url https://github.com/staernid/steamless-rs.git --commit "$TAG_NAME" --spec packaging/fedora/steamless.spec steamless
+            copr buildscm --clone-url https://github.com/staernid/steamless-rs.git --commit "$TAG_NAME" --spec steamless.spec steamless
           else
             echo "COPR_CONFIG secret not set in repository; skipping remote trigger."
           fi

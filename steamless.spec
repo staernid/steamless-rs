@@ -36,7 +36,3 @@ cargo test --workspace
 
 %changelog
 {{{ git_dir_changelog }}}
-
-
-
-
