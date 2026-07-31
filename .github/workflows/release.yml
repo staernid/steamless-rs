@@ -3,6 +3,7 @@ name: Release Steamless Engine
 on:
   push:
     tags:
+      - 'b*'
       - 'v*'
   workflow_dispatch:
 
@@ -83,10 +84,11 @@ jobs:
         env:
           COPR_CONFIG: ${{ secrets.COPR_CONFIG }}
         run: |
+          TAG_NAME=${GITHUB_REF#refs/tags/}
           if [ -n "$COPR_CONFIG" ]; then
             mkdir -p ~/.config
             echo "$COPR_CONFIG" > ~/.config/copr
-            copr buildscm --clone-url https://github.com/staernid/steamless-rs.git --spec packaging/fedora/steamless.spec steamless
+            copr buildscm --clone-url https://github.com/staernid/steamless-rs.git --commit "$TAG_NAME" --spec packaging/fedora/steamless.spec steamless
           else
             echo "COPR_CONFIG secret not set in repository; skipping remote trigger."
           fi
