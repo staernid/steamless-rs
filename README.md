@@ -29,34 +29,51 @@ Steamless removes the SteamStub DRM protection layer applied to applications and
 
 ---
 
-## 🚀 Quick Start
+## 🐧 Linux Installation Guide
 
-### Building from Source
-
-**Requirements:**
-- Rust compiler (`rustc` & `cargo`)
+### Option 1: Install System-Wide via Cargo (Recommended)
 
 ```bash
-# Build release binaries and shared library
+# Install CLI binary to ~/.cargo/bin/steamless
+cargo install --path crates/steamless-cli
+```
+
+Once installed, `steamless` is directly available in your terminal:
+```bash
+steamless /path/to/game.exe
+```
+
+### Option 2: Manual System-Wide Binary & Library Installation
+
+```bash
+# Build release binaries
 cargo build --release
 
-# Run CLI unpacker
-./target/release/steamless target_game.exe
+# Install CLI binary to /usr/local/bin
+sudo cp target/release/steamless /usr/local/bin/
+
+# Install C shared library to /usr/local/lib
+sudo cp target/release/libsteamless.so /usr/local/lib/
+sudo ldconfig
 ```
 
 ---
 
-## 🔌 Integration & Plugin Usage
+## 🔌 Lutris & Linux Game Launchers Integration
 
-### 1. Lutris / Heroic / Proton Plugin (Linux)
+Automate SteamStub DRM unpacking whenever launching games in Lutris, Heroic Games Launcher, or Steam Deck:
 
-Integrate directly into Lutris as a pre-launch hook using Python `ctypes`:
+1. Open **Lutris** → Right-click Game → **Configure**.
+2. Go to **System options** → Enable **Show advanced options**.
+3. Under **Pre-launch script**, enter path:
+   `/path/to/steamless-rs/plugins/lutris/steamless_lutris.py`
+4. Check **Wait for pre-launch script to finish**.
 
-```bash
-python3 plugins/lutris/steamless_lutris.py /path/to/game.exe
-```
+Whenever you launch a game, Lutris automatically strips SteamStub DRM before starting Wine/Proton!
 
-### 2. C ABI C/C++ / Android Integration
+---
+
+## 💻 C ABI / C/C++ & Android Integration
 
 Exposes `extern "C"` functions for foreign language bindings:
 
