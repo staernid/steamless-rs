@@ -80,7 +80,7 @@ jobs:
       - name: Install copr-cli
         run: pip install copr-cli
 
-      - name: Trigger COPR Build
+      - name: Build & Submit COPR SRPM
         env:
           COPR_CONFIG: ${{ secrets.COPR_CONFIG }}
         run: |
@@ -88,7 +88,11 @@ jobs:
           if [ -n "$COPR_CONFIG" ]; then
             mkdir -p ~/.config
             echo "$COPR_CONFIG" > ~/.config/copr
-            copr buildscm --clone-url https://github.com/staernid/steamless-rs.git --commit "$TAG_NAME" --spec steamless.spec steamless
+            sed -i "s/^Version:.*/Version:        ${TAG_NAME}/" steamless.spec
+            mkdir -p ~/rpmbuild/SOURCES
+            curl -sL "https://github.com/staernid/steamless-rs/archive/refs/tags/${TAG_NAME}.tar.gz" -o ~/rpmbuild/SOURCES/steamless-${TAG_NAME}.tar.gz
+            rpmbuild -bs steamless.spec
+            copr build steamless ~/rpmbuild/SRPMS/steamless-${TAG_NAME}-1*.src.rpm
           else
             echo "COPR_CONFIG secret not set in repository; skipping remote trigger."
           fi

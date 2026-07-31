@@ -1,11 +1,11 @@
 Name:           steamless
-Version:        b100
+Version:        b0
 Release:        1%{?dist}
 Summary:        High-performance, zero-dependency SteamStub DRM unpacker engine
 
 License:        GPL-3.0-only
 URL:            https://github.com/staernid/steamless-rs
-Source0:        %{url}/archive/refs/tags/%{version}.tar.gz#/%{name}-%{version}.tar.gz
+Source0:        https://github.com/staernid/steamless-rs/archive/refs/tags/%{version}.tar.gz#/%{name}-%{version}.tar.gz
 
 BuildRequires:  cargo-rpm-macros >= 25
 BuildRequires:  gcc
@@ -35,5 +35,5 @@ cargo test --workspace
 %{_libdir}/libsteamless_c.so
 
 %changelog
-* Fri Jul 31 2026 Staernid <vitezfh@gmail.com> - b100-1
-- Initial b100 build
+* Fri Jul 31 2026 Staernid <vitezfh@gmail.com> - b0-1
+- Release build
