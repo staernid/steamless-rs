@@ -45,7 +45,7 @@ jobs:
         run: |
           mkdir -p dist
           cp target/${{ matrix.target }}/release/steamless dist/
-          cp target/${{ matrix.target }}/release/libsteamless.so dist/
+          cp target/${{ matrix.target }}/release/libsteamless_c.so dist/
           cp plugins/lutris/steamless_lutris.py dist/
           tar -czvf ${{ matrix.artifact_name }}.tar.gz -C dist .
 
@@ -55,7 +55,7 @@ jobs:
         run: |
           New-Item -ItemType Directory -Path dist
           Copy-Item target/${{ matrix.target }}/release/steamless.exe dist/
-          Copy-Item target/${{ matrix.target }}/release/steamless.dll dist/
+          Copy-Item target/${{ matrix.target }}/release/steamless_c.dll dist/
           Copy-Item plugins/lutris/steamless_lutris.py dist/
           Compress-Archive -Path dist/* -DestinationPath "${{ matrix.artifact_name }}.zip"
 
@@ -66,3 +66,28 @@ jobs:
           files: |
             ${{ matrix.artifact_name }}.tar.gz
             ${{ matrix.artifact_name }}.zip
+
+  trigger-copr:
+    name: Trigger COPR Package Build
+    needs: build-release
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/') || github.event_name == 'workflow_dispatch'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install copr-cli
+        run: pip install copr-cli
+
+      - name: Trigger COPR Build
+        env:
+          COPR_CONFIG: ${{ secrets.COPR_CONFIG }}
+        run: |
+          if [ -n "$COPR_CONFIG" ]; then
+            mkdir -p ~/.config
+            echo "$COPR_CONFIG" > ~/.config/copr
+            copr buildscm --clone-url https://github.com/staernid/steamless-rs.git --spec packaging/fedora/steamless.spec steamless
+          else
+            echo "COPR_CONFIG secret not set in repository; skipping remote trigger."
+          fi
+

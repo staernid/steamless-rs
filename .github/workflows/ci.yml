@@ -16,6 +16,6 @@ jobs:
       - name: Install Rust toolchain
         uses: dtolnay/rust-toolchain@stable
       - name: Run unit tests
-        run: cargo test
-      - name: Build debug workspace
-        run: cargo build
+        run: cargo test --workspace
+      - name: Build release workspace
+        run: cargo build --workspace --release

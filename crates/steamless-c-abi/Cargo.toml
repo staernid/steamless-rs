@@ -1,12 +1,14 @@
 [package]
 name = "steamless-c-abi"
-version = "1.0.0"
-edition = "2021"
-authors = ["Antigravity Engineering"]
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
 description = "Native C ABI shared library export for Steamless engine"
 
 [lib]
-name = "steamless"
+name = "steamless_c"
 crate-type = ["cdylib", "rlib"]
 
 [dependencies]

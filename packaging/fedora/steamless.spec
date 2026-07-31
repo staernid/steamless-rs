@@ -1,5 +1,5 @@
 Name:           steamless
-Version:        1.0.0
+Version:        1.0.1
 Release:        1%{?dist}
 Summary:        High-performance, zero-dependency SteamStub DRM unpacker engine
 
@@ -15,7 +15,7 @@ Steamless is a DRM unpacker for SteamStub variants applied to executables releas
 This is the portable Rust engine supplying a fast CLI utility and C ABI shared library.
 
 %prep
-%autosetup -n %{name}-%{version}
+%autosetup -c
 
 %build
 cargo build --release --workspace
@@ -23,7 +23,7 @@ cargo build --release --workspace
 %install
 rm -rf %{buildroot}
 install -D -m 0755 target/release/steamless %{buildroot}%{_bindir}/steamless
-install -D -m 0755 target/release/libsteamless.so %{buildroot}%{_libdir}/libsteamless.so
+install -D -m 0755 target/release/libsteamless_c.so %{buildroot}%{_libdir}/libsteamless_c.so
 
 %check
 cargo test --workspace
@@ -32,8 +32,9 @@ cargo test --workspace
 %license LICENSE
 %doc README.md
 %{_bindir}/steamless
-%{_libdir}/libsteamless.so
+%{_libdir}/libsteamless_c.so
 
 %changelog
-* Fri Jul 31 2026 Staernid <vitezfh@gmail.com> - 1.0.0-1
-- Initial Fedora COPR RPM package for steamless-rs
+* Fri Jul 31 2026 Staernid <vitezfh@gmail.com> - 1.0.1-1
+- Release v1.0.1 with unified workspace versioning and C ABI library target steamless_c
+
