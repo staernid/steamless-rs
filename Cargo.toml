@@ -7,7 +7,7 @@ members = [
 resolver = "2"
 
 [workspace.package]
-version = "1.0.109"
+version = "1.0.110"
 edition = "2021"
 authors = ["Antigravity Engineering"]
 license = "GPL-3.0-only"
