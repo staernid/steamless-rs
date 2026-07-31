@@ -9,10 +9,6 @@
 
 # Steamless Portable (Rust Engine)
 
-NOTE: **EXTREMELY**, though tastefully, vibe-coded and very briefly tested. It works, but expect trouble at every edge-case for now.
-
----
-
 A high-performance, zero-dependency, ultra-portable rewrite of **Steamless** in Rust. 
 
 Steamless removes the SteamStub DRM protection layer applied to applications and games released on Steam via the Steamworks SDK.
@@ -31,19 +27,26 @@ Steamless removes the SteamStub DRM protection layer applied to applications and
 
 ## 🐧 Linux Installation Guide
 
-### Option 1: Install System-Wide via Cargo (Recommended)
+### Option 1: Fedora COPR (Fedora / RHEL / CentOS Stream)
+
+Enable the COPR repository and install directly via `dnf`:
+
+```bash
+# Enable COPR repository
+sudo dnf copr enable staernid/steamless
+
+# Install CLI binary and shared library
+sudo dnf install steamless
+```
+
+### Option 2: Install System-Wide via Cargo
 
 ```bash
 # Install CLI binary to ~/.cargo/bin/steamless
 cargo install --path crates/steamless-cli
 ```
 
-Once installed, `steamless` is directly available in your terminal:
-```bash
-steamless /path/to/game.exe
-```
-
-### Option 2: Manual System-Wide Binary & Library Installation
+### Option 3: Manual Binary & Library Installation
 
 ```bash
 # Build release binaries
