@@ -100,6 +100,13 @@ int32_t steamless_unpack(const char* input_path, const char* output_path);
 void steamless_free_string(void* ptr);
 ```
 
+Build the shared library from source:
+
+```bash
+cargo build --release -p steamless-c-abi
+# Output: target/release/libsteamless_c.so (Linux), .dylib (macOS), steamless_c.dll (Windows)
+```
+
 ---
 
 ## Supported Versions

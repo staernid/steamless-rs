@@ -54,8 +54,6 @@ jobs:
         run: |
           mkdir -p dist
           cp target/${{ matrix.target }}/release/steamless dist/
-          cp target/${{ matrix.target }}/release/libsteamless_c.so dist/
-          cp plugins/lutris/steamless_lutris.py dist/
           tar -czvf ${{ matrix.artifact_name }}.tar.gz -C dist .
 
       - name: Package artifacts (macOS)
@@ -63,8 +61,6 @@ jobs:
         run: |
           mkdir -p dist
           cp target/${{ matrix.target }}/release/steamless dist/
-          cp target/${{ matrix.target }}/release/libsteamless_c.dylib dist/
-          cp plugins/lutris/steamless_lutris.py dist/
           tar -czvf ${{ matrix.artifact_name }}.tar.gz -C dist .
 
       - name: Package artifacts (Windows)
@@ -73,8 +69,6 @@ jobs:
         run: |
           New-Item -ItemType Directory -Path dist
           Copy-Item target/${{ matrix.target }}/release/steamless.exe dist/
-          Copy-Item target/${{ matrix.target }}/release/steamless_c.dll dist/
-          Copy-Item plugins/lutris/steamless_lutris.py dist/
           Compress-Archive -Path dist/* -DestinationPath "${{ matrix.artifact_name }}.zip"
 
       - name: Upload artifact to GitHub Release
