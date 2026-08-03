@@ -4,18 +4,18 @@ version = 4
 
 [[package]]
 name = "steamless-c-abi"
-version = "0.0.0"
+version = "1.0.114"
 dependencies = [
  "steamless-core",
 ]
 
 [[package]]
 name = "steamless-cli"
-version = "0.0.0"
+version = "1.0.114"
 dependencies = [
  "steamless-core",
 ]
 
 [[package]]
 name = "steamless-core"
-version = "0.0.0"
+version = "1.0.114"
