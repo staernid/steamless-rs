@@ -41,27 +41,32 @@ Download the latest release binary from [GitHub Releases](https://github.com/sta
 
 **Linux (x64)**
 ```bash
-curl -fsSL https://github.com/staernid/steamless-rs/releases/latest/download/steamless-linux-x64.tar.gz | tar -xz -C ~/.local/bin steamless
+curl -fsSL -o ~/.local/bin/steamless https://github.com/staernid/steamless-rs/releases/latest/download/steamless-linux-x64 && chmod +x ~/.local/bin/steamless
+```
+
+**Linux (ARM64)**
+```bash
+curl -fsSL -o ~/.local/bin/steamless https://github.com/staernid/steamless-rs/releases/latest/download/steamless-linux-arm64 && chmod +x ~/.local/bin/steamless
 ```
 
 **macOS (Apple Silicon)**
 ```bash
-curl -fsSL https://github.com/staernid/steamless-rs/releases/latest/download/steamless-macos-arm64.tar.gz | tar -xz -C ~/.local/bin steamless
+curl -fsSL -o ~/.local/bin/steamless https://github.com/staernid/steamless-rs/releases/latest/download/steamless-macos-arm64 && chmod +x ~/.local/bin/steamless
 ```
 
 **macOS (Intel)**
 ```bash
-curl -fsSL https://github.com/staernid/steamless-rs/releases/latest/download/steamless-macos-x64.tar.gz | tar -xz -C ~/.local/bin steamless
+curl -fsSL -o ~/.local/bin/steamless https://github.com/staernid/steamless-rs/releases/latest/download/steamless-macos-x64 && chmod +x ~/.local/bin/steamless
 ```
 
 **Windows (x64)** — run in PowerShell:
 ```powershell
-Invoke-WebRequest -Uri "https://github.com/staernid/steamless-rs/releases/latest/download/steamless-windows-x64.zip" -OutFile steamless.zip; Expand-Archive steamless.zip -DestinationPath "$env:LOCALAPPDATA\steamless"
+Invoke-WebRequest -Uri "https://github.com/staernid/steamless-rs/releases/latest/download/steamless-windows-x64.exe" -OutFile "$env:LOCALAPPDATA\steamless\steamless.exe"
 ```
 
 **Windows (x86)** — run in PowerShell:
 ```powershell
-Invoke-WebRequest -Uri "https://github.com/staernid/steamless-rs/releases/latest/download/steamless-windows-x86.zip" -OutFile steamless.zip; Expand-Archive steamless.zip -DestinationPath "$env:LOCALAPPDATA\steamless"
+Invoke-WebRequest -Uri "https://github.com/staernid/steamless-rs/releases/latest/download/steamless-windows-x86.exe" -OutFile "$env:LOCALAPPDATA\steamless\steamless.exe"
 ```
 
 ---
