@@ -4,9 +4,9 @@ use steamless_core::pe::PeFile;
 use steamless_core::unpackers::UnpackerRegistry;
 
 fn main() {
-    println!("==================================================");
-    println!("  Steamless Engine (Portable Native Rust Edition)  ");
-    println!("==================================================");
+    let version = env!("STEAMLESS_VERSION");
+    println!("Steamless Engine v{version} (Portable Native Rust Edition)");
+    println!("{}", "=".repeat(50));
 
     let registry = UnpackerRegistry::new();
     let args: Vec<String> = env::args().collect();

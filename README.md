@@ -118,15 +118,11 @@ cargo build --release -p steamless-c-abi
 
 ## 🚀 Releasing & Versioning
 
-To publish a new release and trigger automated cross-platform binary builds:
+Version is derived automatically from git tags at build time — no manual edits needed.
 
 ```bash
-# 1. Update version in Cargo.toml to match new build number (e.g., 1.0.109)
-sed -i 's/^version = .*/version = "1.0.109"/' Cargo.toml
-
-# 2. Commit and push tag to trigger GitHub Release & binary builds
-git commit -am "release: b109"
-git tag b109
+git commit -am "release: v1.0.114"
+git tag v1.0.114
 git push origin master --tags
 ```
 
