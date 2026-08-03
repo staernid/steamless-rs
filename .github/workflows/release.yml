@@ -56,7 +56,7 @@ jobs:
         shell: bash
         run: |
           VERSION="${GITHUB_REF_NAME#v}"
-          sed -i "s/^version = .*/version = \"${VERSION}\"/" Cargo.toml
+          perl -pi -e "s/^version = .*/version = \"${VERSION}\"/" Cargo.toml
 
       - name: Install cross-compilation toolchain
         if: matrix.target == 'aarch64-unknown-linux-gnu'
