@@ -1,3 +1,6 @@
+use std::fs;
+use super::{compute_pe_checksum, strip_section_header};
+
 #[derive(Debug, Clone, Copy)]
 #[repr(C, packed)]
 pub struct ImageDosHeader32 {
@@ -64,6 +67,7 @@ pub struct Pe32File {
     pub base_of_code: u32,
     pub sections: Vec<Pe32Section>,
     pub raw_data: Vec<u8>,
+    pub tls_callbacks: Vec<u32>,
 }
 
 impl Pe32File {
@@ -132,6 +136,31 @@ impl Pe32File {
             });
         }
 
+        // Parse TLS directory if present
+        let mut tls_callbacks = Vec::new();
+        let num_rva_sizes = u32::from_le_bytes(data[opt_header_offset + 92..opt_header_offset + 96].try_into().unwrap_or([0; 4]));
+        if num_rva_sizes >= 10 {
+            let tls_dir_rva = u32::from_le_bytes(data[opt_header_offset + 168..opt_header_offset + 172].try_into().unwrap_or([0; 4]));
+            if tls_dir_rva > 0 {
+                if let Ok(tls_offset) = Self::rva_to_file_offset_static(&sections, tls_dir_rva) {
+                    if tls_offset + 24 <= data.len() {
+                        let callbacks_va = u32::from_le_bytes(data[tls_offset + 12..tls_offset + 16].try_into().unwrap_or([0; 4]));
+                        if callbacks_va > 0 {
+                            let callbacks_rva = if callbacks_va >= image_base { callbacks_va - image_base } else { callbacks_va };
+                            if let Ok(mut cb_offset) = Self::rva_to_file_offset_static(&sections, callbacks_rva) {
+                                while cb_offset + 4 <= data.len() {
+                                    let cb = u32::from_le_bytes(data[cb_offset..cb_offset + 4].try_into().unwrap_or([0; 4]));
+                                    if cb == 0 { break; }
+                                    tls_callbacks.push(cb);
+                                    cb_offset += 4;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         Ok(Pe32File {
             dos_header,
             file_header,
@@ -140,7 +169,44 @@ impl Pe32File {
             base_of_code,
             sections,
             raw_data: data.to_vec(),
+            tls_callbacks,
         })
+    }
+
+    fn rva_to_file_offset_static(sections: &[Pe32Section], rva: u32) -> Result<usize, String> {
+        for s in sections {
+            let v_addr = s.header.virtual_address;
+            let v_size = s.header.virtual_size.max(s.header.size_of_raw_data);
+            if rva >= v_addr && rva < v_addr + v_size {
+                let offset_in_sec = rva - v_addr;
+                return Ok(s.header.pointer_to_raw_data as usize + offset_in_sec as usize);
+            }
+        }
+        Err(format!("RVA 0x{:08X} not found in any section", rva))
+    }
+
+    pub fn get_file_offset_from_rva(&self, rva: u32) -> Result<usize, String> {
+        Self::rva_to_file_offset_static(&self.sections, rva)
+    }
+
+    pub fn get_rva_from_va(&self, va: u32) -> u32 {
+        if va >= self.image_base {
+            va - self.image_base
+        } else {
+            va
+        }
+    }
+
+    pub fn get_owner_section_index(&self, va_or_rva: u32) -> Option<usize> {
+        let rva = self.get_rva_from_va(va_or_rva);
+        for (i, s) in self.sections.iter().enumerate() {
+            let v_addr = s.header.virtual_address;
+            let v_size = s.header.virtual_size.max(s.header.size_of_raw_data);
+            if rva >= v_addr && rva < v_addr + v_size {
+                return Some(i);
+            }
+        }
+        None
     }
 
     pub fn has_section(&self, name: &str) -> bool {
@@ -152,5 +218,70 @@ impl Pe32File {
             let sec_name = String::from_utf8_lossy(&s.header.name);
             sec_name.trim_matches('\0') == name
         })
+    }
+
+    /// Rebuilds PE32 file bytes with new entry point, updated code section, removed .bind section, and updated PE checksum, writing to output_path.
+    pub fn save_unpacked(
+        &self,
+        output_path: &str,
+        new_entry_point: u32,
+        code_sec_index: Option<usize>,
+        new_code_data: Option<&[u8]>,
+        remove_bind: bool,
+    ) -> Result<(), String> {
+        let mut out_data = self.raw_data.clone();
+
+        let lfanew = self.dos_header.e_lfanew as usize;
+        let file_header_offset = lfanew + 4;
+        let opt_header_offset = file_header_offset + std::mem::size_of::<ImageFileHeader32>();
+        let section_header_offset = opt_header_offset + self.file_header.size_of_optional_header as usize;
+
+        // 1. Update AddressOfEntryPoint in Optional Header (offset +16)
+        let ep_bytes = new_entry_point.to_le_bytes();
+        out_data[opt_header_offset + 16..opt_header_offset + 20].copy_from_slice(&ep_bytes);
+
+        // 2. If new code data is supplied, copy it into out_data at pointer_to_raw_data
+        if let (Some(idx), Some(code_data)) = (code_sec_index, new_code_data) {
+            if idx < self.sections.len() {
+                let sec = &self.sections[idx];
+                let ptr = sec.header.pointer_to_raw_data as usize;
+                let copy_len = code_data.len().min(out_data.len().saturating_sub(ptr));
+                if ptr + copy_len <= out_data.len() {
+                    out_data[ptr..ptr + copy_len].copy_from_slice(&code_data[..copy_len]);
+                }
+            }
+        }
+
+        // 3. Remove .bind section if requested
+        if remove_bind {
+            let mut bind_index = None;
+            for (i, s) in self.sections.iter().enumerate() {
+                let name = String::from_utf8_lossy(&s.header.name);
+                if name.trim_matches('\0') == ".bind" {
+                    bind_index = Some(i);
+                    break;
+                }
+            }
+
+            if let Some(bind_idx) = bind_index {
+                let bind_header = self.sections[bind_idx].header;
+                strip_section_header(
+                    &mut out_data,
+                    file_header_offset,
+                    section_header_offset,
+                    self.sections.len(),
+                    bind_idx,
+                    std::mem::size_of::<ImageSectionHeader32>(),
+                    bind_header.pointer_to_raw_data as usize,
+                    bind_header.size_of_raw_data as usize,
+                );
+            }
+        }
+
+        // 4. Update CheckSum in Optional Header (offset +64)
+        compute_pe_checksum(&mut out_data, opt_header_offset + 64);
+
+        // Write output to file
+        fs::write(output_path, &out_data).map_err(|e| format!("Failed to write unpacked executable: {}", e))
     }
 }

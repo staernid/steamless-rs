@@ -5,6 +5,8 @@ edition.workspace = true
 authors.workspace = true
 license.workspace = true
 repository.workspace = true
-description = "High-performance, zero-dependency SteamStub DRM unpacker library"
+description = "High-performance SteamStub DRM unpacker library"
 
 [dependencies]
+aes = "0.8"
+cbc = "0.1"

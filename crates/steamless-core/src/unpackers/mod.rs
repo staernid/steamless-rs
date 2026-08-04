@@ -8,13 +8,12 @@ pub trait UnpackerPlugin: Send + Sync {
     fn unpack(&self, pe: &PeFile, output_path: &str) -> Result<(), String>;
 }
 
-pub mod variant10_x86;
-pub mod variant20_x86;
-pub mod variant21_x86;
-pub mod variant30_x64;
-pub mod variant30_x86;
-pub mod variant31_x64;
-pub mod variant31_x86;
+pub mod headers;
+pub mod v1_v2;
+pub mod v3;
+
+pub use v1_v2::{Variant10x86, Variant20x86, Variant21x86};
+pub use v3::{Variant30x64, Variant30x86, Variant31x64, Variant31x86};
 
 pub struct UnpackerRegistry {
     plugins: Vec<Box<dyn UnpackerPlugin>>,
@@ -23,13 +22,13 @@ pub struct UnpackerRegistry {
 impl UnpackerRegistry {
     pub fn new() -> Self {
         let mut registry = Self { plugins: Vec::new() };
-        registry.register(Box::new(variant10_x86::Variant10x86));
-        registry.register(Box::new(variant20_x86::Variant20x86));
-        registry.register(Box::new(variant21_x86::Variant21x86));
-        registry.register(Box::new(variant30_x86::Variant30x86));
-        registry.register(Box::new(variant30_x64::Variant30x64));
-        registry.register(Box::new(variant31_x86::Variant31x86));
-        registry.register(Box::new(variant31_x64::Variant31x64));
+        registry.register(Box::new(Variant10x86));
+        registry.register(Box::new(Variant20x86));
+        registry.register(Box::new(Variant21x86));
+        registry.register(Box::new(Variant30x86));
+        registry.register(Box::new(Variant30x64));
+        registry.register(Box::new(Variant31x86));
+        registry.register(Box::new(Variant31x64));
         registry
     }
 
